@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+    xmlns:admin="http://webns.net/mvcb/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:content="http://purl.org/rss/1.0/modules/content/">
+
+    <channel>
+    
+    <title>Links for {{ userInfo.name }}</title>
+    <link>{{ rssURL }}</link>
+    <description>Links harvested from the home twitter stream of {{ userInfo.name }}</description>
+    <dc:language>en</dc:language>
+    <dc:creator>me@jamesconstable.co.uk</dc:creator>
+
+    <dc:rights>Copyright {% now "Y" %}</dc:rights>
+    <admin:generatorAgent rdf:resource="http://www.siftlinks.com/" />
+	
+	{% for tweet in tweets %}
+		<item>
+			<title><![CDATA[ {{ tweet.tweetcontent|striptags }} ]]></title>
+			<link>{{ tweet.url }}</link>
+			<guid>{{ tweet.url }}</guid>
+			<description><![CDATA[
+				<p><img width= "73" height="73" src="{{ tweet.useravatar }}" /> <a href="http://twitter.com/{{ tweet.screenname }}">{{ tweet.username }}</a>: {{ tweet.tweetcontent|safe }}</p>
+				{% if tweet.retweet %}
+					<p>Retweeted by <a href="http://twitter.com/{{ tweet.retweetedby_screenname }}">{{ tweet.retweetedby_username }}</a></p>
+				{% endif %}
+				
+				<p>SiftLinks monitors your Twitter account and creates an RSS feed from all the tweets containing links.  Like Siftlinks.com? <a href="http://pledgie.com/campaigns/15159">Donate now</a>.</p>
+		
+      ]]></description>
+      <pubDate>{{ tweet.tweetdate }}</pubDate>
+        </item>
+	{% endfor %}
+</channel></rss>

@@ -1,0 +1,65 @@
+body {
+	font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', sans-serif;
+	background-color: #FFFFFF;
+	color: #666;
+}
+
+.code {
+	font-family: 'Courier New', Courier;
+	font-size: 14px;
+}
+
+#logo {
+	background-image: url('/assets/img/sprite.png');
+	background-position: 0 0;
+	text-indent: -4999em;
+	width: 474px;
+	height: 129px;
+	margin: 0 auto;
+}
+
+#main {
+	width: 550px;
+	margin: 0 auto;
+}
+
+#twitter-login {
+	background-image: url('/assets/img/sprite.png');
+	width: 231px;
+	height: 38px;
+	text-indent: -4999em;
+	display: block;
+	background-position: 0 -267px;
+	margin: 0 auto;
+} 
+
+#twitter-login:hover {
+	background-image: url('/assets/img/sprite.png');
+	background-position: 0 -179px;
+}
+
+#pledgie {
+	float: right;
+	width: 149px;
+	height: 37px;
+	margin-left: 10px;
+}
+
+#timeline, #timeline ul {
+	list-style: none;
+}
+
+li.tweet img {
+	float: left;
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
+
+li.tweet {
+	clear:both;
+	padding-bottom: 10px;
+}
+
+li.tweet ul {
+	margin-left: 83px;
+}

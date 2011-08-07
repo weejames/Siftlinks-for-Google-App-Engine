@@ -1,0 +1,53 @@
+<html>
+	<head>
+    <link type="text/css" rel="stylesheet" href="/assets/css/main.css" />
+  </head>
+  <body>
+
+	<div id="main">
+
+		<h2 id="logo">SIFTLINKS</h2>
+		<p id="pledgie"><a href='http://www.pledgie.com/campaigns/15159'><img alt='Click here to lend your support to: SiftLinks and make a donation at www.pledgie.com !' src='http://www.pledgie.com/campaigns/15159.png?skin_name=chrome' border='0' /></a></p>
+
+		<!-- New user only content, wee welcome message-->
+		{% if newUser %}
+		<p><img src="{{ userInfo.avatar }}" align="left" />Hey {{ userInfo.name }},<br />
+			Thanks for joining SiftLinks.  We've started pulling your tweets with links in them into an RSS feed already.<p>
+		{% else %}
+		<p><img src="{{ userInfo.avatar }}" align="left" />Hey {{ userInfo.name }},<br />
+			Welcome back to SiftLinks.  If you're finding it a useful tool please consider <a href="http://www.pledgie.com/campaigns/15159">donating</a>.<p>
+		{% endif %}
+			
+		<p>Your SiftLinks RSS is:</p>
+		
+		<p class="code">{{ rssURL }}</p>
+		<!--/ New user only content -->
+
+	<ul id="timeline">
+	{% for tweet in tweets %}
+		<li class="tweet">
+			<p><img width= "73" height="73" src="{{ tweet.useravatar }}" /> <a href="http://twitter.com/{{ tweet.screenname }}">{{ tweet.username }}</a>: {{ tweet.tweetcontent|safe }}</p>
+			{% if tweet.retweet %}
+				<p>Retweeted by <a href="http://twitter.com/{{ tweet.retweetedby_screenname }}">{{ tweet.retweetedby_username }}</a></p>
+			{% endif %}			
+		</li>
+	{% endfor %}
+	</ul>
+	
+	<p>SiftLinks is &copy; <a href="http://jamesconstable.co.uk">James Constable</a> 2009 - 2011.</p>
+	</div>
+
+
+	<script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	try {
+	var pageTracker = _gat._getTracker("UA-65374-6");
+	pageTracker._trackPageview();
+	} catch(err) {}</script>
+
+
+  </body>
+</html>
