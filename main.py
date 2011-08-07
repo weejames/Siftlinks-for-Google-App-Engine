@@ -28,6 +28,8 @@ oauthParams = {
 	'secret': "tdLUsXAnf7kK2HHb3RI463lmiVTTjWiGwVdXePC54g"
 }
 
+maxTweets = 50
+
 class TwitterUser(db.Model):
 	accesstoken = db.StringProperty(required = True)
 	name = db.StringProperty(required = True)
@@ -135,8 +137,7 @@ class WelcomeHandler(webapp.RequestHandler):
 		accessToken = self.request.get("access")
 		newUser = self.request.get("new")
 		
-		if tuser == None:
-			tuser = TwitterUser.gql("WHERE accesstoken = :accesstoken", accesstoken = accessToken).get()
+		tuser = TwitterUser.gql("WHERE accesstoken = :accesstoken", accesstoken = accessToken).get()
 		
 		if tuser == None:
 			return self.error(404)
@@ -232,17 +233,11 @@ class TweetListParserHandler(webapp.RequestHandler):
 		userKey = self.request.get("user")
 		tweetDataKey = self.request.get("tweetdata")
 		start = self.request.get("start")
-		newData = self.request.get("newdata")
 		
 		if start == None:
 			start = 0
 		
 		start = int(start)
-		
-		if newData == None:
-			newData = False
-		else:
-			newData = True
 		
 		tuser = TwitterUser.get(userKey)
 		tweetData = memcache.get(tweetDataKey)
@@ -282,35 +277,27 @@ class TweetListParserHandler(webapp.RequestHandler):
 				tuser.tweetlist.append(newTweet.key())
 				
 				taskqueue.add(url = '/parsetweet', params = {'tweetkey': newTweet.key()} )
-				
-				# changed to a while loop so we can cut down the number of
-				# tweets from a higher number
-				if len(tuser.tweetlist) > 100:
-					while len(tuser.tweetlist) > 100:
-						firstKey = tuser.tweetlist.pop(0)
-						last = Tweet.get(firstKey)
-						if last != None:
-							last.delete_async()
-		
-		
+			
 		finished = False
 		
 		if xcounter >= len(tweetData):
 			finished = True
 		
-		tuser.tweetlist.reverse()		
-		tuser.put()
-		
 		if finished:
 			memcache.delete(tweetDataKey)
+
+			startIndex = len(tuser.tweetlist) - maxTweets
+			if startIndex > 0:
+				deleteList = tuser.tweetlist[0:startIndex]
+				tuser.tweetlist = tuser.tweetlist[startIndex:]
+				db.delete(Tweet.get(deleteList))
 			
-			if newData == True:
-				memcache.delete(key = "feedRSS_" + tuser.accesstoken)
-				memcache.delete(key = "user_" + tuser.accesstoken)
-		
 		else:
-			taskqueue.add(url = '/parselist', params = {'user': tuser.key(), 'tweetdata': 'temptweets' + tuser.userid, 'start' : start+5, 'newdata' : newData} )
-			
+			taskqueue.add(url = '/parselist', params = {'user': tuser.key(), 'tweetdata': 'temptweets' + tuser.userid, 'start' : start+5} )
+
+		
+		tuser.tweetlist.reverse()		
+		tuser.put()
 		
 class TweetDetailsHandler(webapp.RequestHandler):
 	def post(self):
@@ -384,7 +371,7 @@ def profile_main():
     # stats.print_callers()
     logging.info("Profile data:\n%s", stream.getvalue())
 
-main = profile_main
+main = real_main
 
 if __name__ == '__main__':
     main()
