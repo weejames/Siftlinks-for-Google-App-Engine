@@ -191,7 +191,7 @@ class TweetListHandler(webapp.RequestHandler):
 		resetTweets = self.request.get("reset")
 		
 		q = TwitterUser.all(keys_only = False)
-		users = q.fetch(30)
+		users = q.fetch(10)
 
 		for tuser in users:
 			if tuser.avatar is None:
@@ -371,7 +371,7 @@ def profile_main():
     # stats.print_callers()
     logging.info("Profile data:\n%s", stream.getvalue())
 
-main = real_main
+main = profile_main
 
 if __name__ == '__main__':
     main()

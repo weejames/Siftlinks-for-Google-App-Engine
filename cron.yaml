@@ -1,4 +1,4 @@
 cron:
 - description: queue feed updates
   url: /parse
-  schedule: every 30 minutes
+  schedule: every 5 minutes
